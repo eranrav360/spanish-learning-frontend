@@ -1,4 +1,4 @@
-import { Lesson, Exercise, UserProgress, UserStats } from '../types';
+import type { Lesson, Exercise, UserProgress, UserStats } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 

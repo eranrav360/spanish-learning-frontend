@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lesson, UserProgress } from '../types';
+import type { Lesson, UserProgress } from '../types';
 import { api } from '../api/api';
 import LessonCard from '../components/LessonCard';
 

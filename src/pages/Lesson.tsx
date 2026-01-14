@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Exercise } from '../types';
+import type { Exercise } from '../types';
 import { api } from '../api/api';
 import ExerciseCard from '../components/ExerciseCard';
 

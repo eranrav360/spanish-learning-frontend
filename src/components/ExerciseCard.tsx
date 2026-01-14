@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Exercise } from '../types';
+import type { Exercise } from '../types';
 
 interface ExerciseCardProps {
   exercise: Exercise;

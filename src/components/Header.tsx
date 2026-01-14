@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserStats } from '../types';
+import type { UserStats } from '../types';
 
 interface HeaderProps {
   stats: UserStats | null;
