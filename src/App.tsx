@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Lesson from './pages/Lesson';
+import Dashboard from './pages/Dashboard';
 import type { UserStats } from './types';
 import { api } from './api/api';
 
@@ -36,6 +37,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/lesson/:lessonId" element={<Lesson />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>

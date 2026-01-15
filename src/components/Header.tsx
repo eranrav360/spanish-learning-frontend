@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import type { UserStats } from '../types';
 
 interface HeaderProps {
@@ -6,11 +7,25 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ stats }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isDashboard = location.pathname === '/dashboard';
+
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-6">
+            {/* Dashboard Button */}
+            <button
+              onClick={() => navigate(isDashboard ? '/' : '/dashboard')}
+              className="flex items-center gap-2 bg-purple-50 px-4 py-2 rounded-xl hover:bg-purple-100 transition-all"
+            >
+              <span className="text-2xl">{isDashboard ? '📚' : '📊'}</span>
+              <div className="text-sm font-semibold text-purple-600">
+                {isDashboard ? 'שיעורים' : 'דשבורד'}
+              </div>
+            </button>
             {/* Streak */}
             <div className="flex items-center gap-2 bg-orange-50 px-4 py-2 rounded-xl">
               <span className="text-2xl">🔥</span>
