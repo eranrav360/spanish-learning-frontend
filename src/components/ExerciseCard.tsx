@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Exercise } from '../types';
 
 interface ExerciseCardProps {
@@ -16,6 +16,44 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [inputAnswer, setInputAnswer] = useState<string>('');
+
+  // Play sound effect
+  useEffect(() => {
+    if (showResult) {
+      playSound(isCorrect);
+    }
+  }, [showResult, isCorrect]);
+
+  const playSound = (correct: boolean) => {
+    // Using Web Audio API to generate simple tones
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    if (correct) {
+      // Success sound: happy ascending notes
+      const now = audioContext.currentTime;
+      oscillator.frequency.setValueAtTime(523.25, now); // C5
+      oscillator.frequency.setValueAtTime(659.25, now + 0.1); // E5
+      oscillator.frequency.setValueAtTime(783.99, now + 0.2); // G5
+      gainNode.gain.setValueAtTime(0.3, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+      oscillator.start(now);
+      oscillator.stop(now + 0.4);
+    } else {
+      // Error sound: descending note
+      const now = audioContext.currentTime;
+      oscillator.frequency.setValueAtTime(392.00, now); // G4
+      oscillator.frequency.setValueAtTime(293.66, now + 0.15); // D4
+      gainNode.gain.setValueAtTime(0.3, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+      oscillator.start(now);
+      oscillator.stop(now + 0.3);
+    }
+  };
 
   const handleSubmit = () => {
     const answer =
