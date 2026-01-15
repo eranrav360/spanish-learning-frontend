@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Exercise } from '../types';
+import SpanishKeyboard from './SpanishKeyboard';
 
 interface ExerciseCardProps {
   exercise: Exercise;
@@ -16,6 +17,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [inputAnswer, setInputAnswer] = useState<string>('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Play sound effect
   useEffect(() => {
@@ -61,6 +63,24 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     if (answer.trim()) {
       onAnswer(answer);
     }
+  };
+
+  const handleCharacterClick = (char: string) => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    const start = input.selectionStart || 0;
+    const end = input.selectionEnd || 0;
+    const newValue =
+      inputAnswer.substring(0, start) + char + inputAnswer.substring(end);
+
+    setInputAnswer(newValue);
+
+    // Set cursor position after the inserted character
+    setTimeout(() => {
+      input.focus();
+      input.setSelectionRange(start + 1, start + 1);
+    }, 0);
   };
 
   const renderExerciseContent = () => {
@@ -111,6 +131,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
               </p>
             </div>
             <input
+              ref={inputRef}
               type="text"
               value={inputAnswer}
               onChange={(e) => setInputAnswer(e.target.value)}
@@ -125,6 +146,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
               placeholder="הקלד את התרגום כאן..."
               onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
             />
+            {!showResult && <SpanishKeyboard onCharacterClick={handleCharacterClick} />}
             {showResult && !isCorrect && (
               <p className="text-center text-green-600 font-semibold">
                 התשובה הנכונה: {exercise.correctAnswer}
@@ -143,6 +165,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
               </p>
             </div>
             <input
+              ref={inputRef}
               type="text"
               value={inputAnswer}
               onChange={(e) => setInputAnswer(e.target.value)}
@@ -162,6 +185,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 💡 רמז: {exercise.hint}
               </p>
             )}
+            {!showResult && <SpanishKeyboard onCharacterClick={handleCharacterClick} />}
             {showResult && !isCorrect && (
               <p className="text-center text-green-600 font-semibold">
                 התשובה הנכונה: {exercise.correctAnswer}

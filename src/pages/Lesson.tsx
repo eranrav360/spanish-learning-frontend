@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import type { Exercise } from '../types';
 import { api } from '../api/api';
 import ExerciseCard from '../components/ExerciseCard';
+import { compareSpanishText } from '../utils/normalizeSpanish';
 
 const Lesson: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -33,9 +34,8 @@ const Lesson: React.FC = () => {
 
   const handleAnswer = (answer: string) => {
     const currentExercise = exercises[currentIndex];
-    const correct =
-      answer.trim().toLowerCase() ===
-      currentExercise.correctAnswer.trim().toLowerCase();
+    // Use accent-insensitive comparison for Spanish text
+    const correct = compareSpanishText(answer, currentExercise.correctAnswer);
 
     setIsCorrect(correct);
     setShowResult(true);
