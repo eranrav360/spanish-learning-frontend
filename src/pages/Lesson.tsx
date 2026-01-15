@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import type { Exercise } from '../types';
+import type { Exercise, Lesson as LessonType } from '../types';
 import { api } from '../api/api';
 import ExerciseCard from '../components/ExerciseCard';
+import VocabularyModal from '../components/VocabularyModal';
 import { compareSpanishText } from '../utils/normalizeSpanish';
 
 const Lesson: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [lesson, setLesson] = useState<LessonType | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [loading, setLoading] = useState(true);
   const [completed, setCompleted] = useState(false);
+  const [showVocabularyModal, setShowVocabularyModal] = useState(false);
 
   useEffect(() => {
     loadExercises();
@@ -23,8 +26,13 @@ const Lesson: React.FC = () => {
   const loadExercises = async () => {
     try {
       if (!lessonId) return;
-      const data = await api.getExercises(lessonId);
-      setExercises(data);
+      const [exercisesData, lessonsData] = await Promise.all([
+        api.getExercises(lessonId),
+        api.getLessons(),
+      ]);
+      setExercises(exercisesData);
+      const currentLesson = lessonsData.find(l => l._id === lessonId);
+      setLesson(currentLesson || null);
     } catch (error) {
       console.error('Error loading exercises:', error);
     } finally {
@@ -137,12 +145,21 @@ const Lesson: React.FC = () => {
       {/* Progress Header */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <button
-            onClick={() => navigate('/')}
-            className="text-gray-600 hover:text-gray-800 font-semibold"
-          >
-            ← חזור
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/')}
+              className="text-gray-600 hover:text-gray-800 font-semibold"
+            >
+              ← חזור
+            </button>
+            <button
+              onClick={() => setShowVocabularyModal(true)}
+              className="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-all border-2 border-blue-300"
+            >
+              <span className="text-xl">📖</span>
+              <span className="text-sm font-semibold text-blue-600">חומר לימוד</span>
+            </button>
+          </div>
           <div className="flex items-center gap-4">
             <div className="text-lg font-semibold text-gray-700">
               ⭐ {score}
@@ -169,6 +186,17 @@ const Lesson: React.FC = () => {
         showResult={showResult}
         isCorrect={isCorrect}
       />
+
+      {/* Vocabulary Modal */}
+      {lesson && (
+        <VocabularyModal
+          isOpen={showVocabularyModal}
+          onClose={() => setShowVocabularyModal(false)}
+          vocabulary={lesson.vocabulary || []}
+          grammarNotes={lesson.grammarNotes}
+          lessonTitle={lesson.title}
+        />
+      )}
     </div>
   );
 };

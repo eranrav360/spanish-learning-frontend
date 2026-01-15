@@ -1,3 +1,9 @@
+export interface VocabularyItem {
+  spanish: string;
+  hebrew: string;
+  example?: string;
+}
+
 export interface Lesson {
   _id: string;
   title: string;
@@ -7,6 +13,8 @@ export interface Lesson {
   color: string;
   totalExercises: number;
   completed: boolean;
+  vocabulary: VocabularyItem[];
+  grammarNotes?: string;
 }
 
 export interface Exercise {

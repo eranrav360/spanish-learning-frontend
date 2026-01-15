@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
+import Study from './pages/Study';
 import Lesson from './pages/Lesson';
 import Dashboard from './pages/Dashboard';
 import type { UserStats } from './types';
@@ -36,6 +37,7 @@ function App() {
         <Header stats={stats} />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/study/:lessonId" element={<Study />} />
           <Route path="/lesson/:lessonId" element={<Lesson />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>

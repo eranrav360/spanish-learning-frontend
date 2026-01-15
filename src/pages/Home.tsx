@@ -43,7 +43,7 @@ const Home: React.FC = () => {
     );
 
     if (allPreviousCompleted || level === 1) {
-      navigate(`/lesson/${lessonId}`);
+      navigate(`/study/${lessonId}`);
     }
   };
 
